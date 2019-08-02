@@ -47,7 +47,7 @@ export class MatchesPage {
     console.log('ionViewDidLoad MatchesPage');
   }
 
-  getMatches() {
+  /*getMatches() {
     //Uses the LiveScoreApiProvider to get the latitud and longitude coordinates for location set by the user
     this.LiveScoreApiProvider.getGroupA().subscribe((data: any) => {
             this.geometry.longitude = data.results[0].position.lon;
@@ -72,6 +72,6 @@ export class MatchesPage {
                         this.summaryIcon = "thunderstorm";
                 });
         });
-}
+    }*/
 
 }
