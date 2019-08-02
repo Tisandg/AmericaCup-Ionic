@@ -7,6 +7,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { MyApp } from './app.component';
 import { AppConstantsProvider } from '../providers/app-constants/app-constants';
 import { LiveScoreApiProvider } from '../providers/live-score-api/live-score-api';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { LiveScoreApiProvider } from '../providers/live-score-api/live-score-api
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],

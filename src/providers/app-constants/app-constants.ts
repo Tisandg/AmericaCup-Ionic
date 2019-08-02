@@ -22,7 +22,7 @@ export class AppConstantsProvider {
 
   getGroupA(){
     return this.groupA;
-  }
+  }ñ
   getGroupB(){
     return this.groupB;
   }

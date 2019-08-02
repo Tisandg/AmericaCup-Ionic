@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AppConstantsProvider } from '../../providers/app-constants/app-constants';
 import { LiveScoreApiProvider } from '../../providers/live-score-api/live-score-api';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * Generated class for the MatchesPage page.
@@ -17,7 +19,16 @@ import { LiveScoreApiProvider } from '../../providers/live-score-api/live-score-
 })
 export class MatchesPage {
 
-  matches: Array<any> =[
+  private appConstants: any;
+  private matchesServer: any;
+  private dataServer: any;
+  private LiveScoreApi: any;
+  private matches: Array<any>;
+  private matchesA: Array<any>;
+  private matchesB: Array<any>;
+  private matchesC: Array<any>;
+
+  /*matches: Array<any> =[
     {
       nameTeamA: "Colombia",
       nameTeamB: "Argentina",
@@ -39,39 +50,49 @@ export class MatchesPage {
       imageTeamA: "assets/imgs/Flags/paraguay.png",
       imageTeamB: "assets/imgs/Flags/colombia.png"
     }
-  ];
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  ];*/
+  constructor(public navCtrl: NavController, public navParams: NavParams,
+    public http:HttpClient, appConstants:AppConstantsProvider){
+    //appConstants:AppConstantsProvider, LiveScoreApi: LiveScoreApiProvider) {
+    this.appConstants = appConstants;
+    //this.LiveScoreApi = LiveScoreApi;
+    this.getMatchesA();
+    //this.getMatchesB();
+    //this.getMatchesC();
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad MatchesPage');
   }
 
-  /*getMatches() {
-    //Uses the LiveScoreApiProvider to get the latitud and longitude coordinates for location set by the user
-    this.LiveScoreApiProvider.getGroupA().subscribe((data: any) => {
-            this.geometry.longitude = data.results[0].position.lon;
-            this.geometry.latitude = data.results[0].position.lat;
-            //Prints the coordinates recovered from service in the console 
-            console.log('Geometrylat: ' + this.geometry.longitude + ', Geometrylong: ' + this.geometry.latitude);
-            //Gets the current weather conditions using the coordinates translated from the location set by the user
-            this.Weather.getCurrentWeather(this.geometry.longitude, this.geometry.latitude).
-                subscribe((weatherData: any) => {
-                    //Gets the current conditions from the specific JSON object
-                    this.currentWeather = weatherData.currently;
-                    //Connection to service was successful
-                    this.weatherResult = true;
-                    //Sets the path for the icon to show according to weather conditions 
-                    if (this.currentWeather.summary.toLowerCase().indexOf("cloudy") > 0)
-                        this.summaryIcon = "cloudy";
-                    else if (this.currentWeather.summary.toLowerCase().indexOf("rainy") > 0)
-                        this.summaryIcon = "rainy";
-                    else if (this.currentWeather.summary.toLowerCase().indexOf("sunny") > 0)
-                        this.summaryIcon = "sunny";
-                    else if (this.currentWeather.summary.toLowerCase().indexOf("thunderstorm") > 0)
-                        this.summaryIcon = "thunderstorm";
-                });
-        });
-    }*/
+  getMatchesA(){
+    let url = 'https://cors-anywhere.herokuapp.com/'+this.appConstants.getGroupA();
+    let data:Observable<any> = this.http.get(url);
+    data.subscribe(result => {
+      console.log(result.data.match);
+      this.matches = result.data.match;
+      //this.matches = [this.matches, this.matchesA];
+    });
+  }
+
+  getMatchesB(){
+    let url = 'https://cors-anywhere.herokuapp.com/'+this.appConstants.getGroupB();
+    let data:Observable<any> = this.http.get(url);
+    data.subscribe(result => {
+      console.log(result.data.match);
+      this.matches = result.data.match;
+      //this.matches = [this.matches, this.matchesB];
+    });
+  }
+
+  getMatchesC(){
+    let url = 'https://cors-anywhere.herokuapp.com/'+this.appConstants.getGroupC();
+    let data:Observable<any> = this.http.get(url);
+    data.subscribe(result => {
+      console.log(result.data.match);
+      this.matches = result.data.match;
+      //this.matches = [this.matches, this.matchesC];
+    });
+  }
 
 }
