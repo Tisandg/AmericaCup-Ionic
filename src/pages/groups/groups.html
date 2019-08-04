@@ -11,5 +11,60 @@
 </ion-header>
 
 <ion-content padding>
-    <ion-label>This is Groups page</ion-label>
+  <ion-label>Group A</ion-label>
+  <ion-list>
+    <ion-item *ngFor="let groupA of groupsA" detail>
+
+        <ion-label>
+            <ion-thumbnail>
+              <ion-img [src]="groupA.imageFlag" width="48" height="48"></ion-img>
+            </ion-thumbnail>
+        </ion-label>
+        <ion-label>{{groupA.name}}</ion-label>
+        <ion-label>{{groupA.m}}</ion-label>
+        <ion-label>{{groupA.w}}</ion-label>
+        <ion-label>{{groupA.d}}</ion-label>
+        <ion-label>{{groupA.l}}</ion-label>
+        <ion-label>{{groupA.pts}}</ion-label>
+
+    </ion-item>
+  </ion-list>
+
+  <ion-label>Group B</ion-label>
+  <ion-list>
+    <ion-item *ngFor="let groupB of groupsB" detail>
+
+        <ion-label>
+            <ion-thumbnail>
+              <ion-img [src]="groupB.imageFlag" width="48" height="48"></ion-img>
+            </ion-thumbnail>
+        </ion-label>
+        <ion-label>{{groupB.name}}</ion-label>
+        <ion-label>{{groupB.m}}</ion-label>
+        <ion-label>{{groupB.w}}</ion-label>
+        <ion-label>{{groupB.d}}</ion-label>
+        <ion-label>{{groupB.l}}</ion-label>
+        <ion-label>{{groupB.pts}}</ion-label>
+
+    </ion-item>
+  </ion-list>
+
+  <ion-label>Group C</ion-label>
+  <ion-list>
+    <ion-item *ngFor="let groupC of groupsC" detail>
+
+        <ion-label>
+            <ion-thumbnail>
+              <ion-img [src]="groupC.imageFlag" width="48" height="48"></ion-img>
+            </ion-thumbnail>
+        </ion-label>
+        <ion-label>{{groupC.name}}</ion-label>
+        <ion-label>{{groupC.m}}</ion-label>
+        <ion-label>{{groupCw}}</ion-label>
+        <ion-label>{{groupC.d}}</ion-label>
+        <ion-label>{{groupC.l}}</ion-label>
+        <ion-label>{{groupC.pts}}</ion-label>
+
+    </ion-item>
+  </ion-list>
 </ion-content>
