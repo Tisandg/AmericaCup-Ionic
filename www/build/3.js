@@ -71,7 +71,7 @@ var CopaAmericaPage = /** @class */ (function () {
     }
     CopaAmericaPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-copa-america',template:/*ion-inline-start:"D:\Development projects\Ionic\CopaAmerica\src\pages\copa-america\copa-america.html"*/'<ion-tabs>\n    <ion-tab [root]="matchesRoot" tabTitle="Matches" tabIcon="information-circle"></ion-tab>\n    <ion-tab [root]="groupsRoot" tabTitle="Groups" tabIcon="information-circle"></ion-tab>\n    <ion-tab [root]="favoritesRoot" tabTitle="Favorites" tabIcon="information-circle"></ion-tab>\n</ion-tabs>\n'/*ion-inline-end:"D:\Development projects\Ionic\CopaAmerica\src\pages\copa-america\copa-america.html"*/
+            selector: 'page-copa-america',template:/*ion-inline-start:"C:\Users\ASUS\Desktop\AmericaCup-Ionic\src\pages\copa-america\copa-america.html"*/'<ion-tabs>\n\n    <ion-tab [root]="matchesRoot" tabTitle="Matches" tabIcon="information-circle"></ion-tab>\n\n    <ion-tab [root]="groupsRoot" tabTitle="Groups" tabIcon="information-circle"></ion-tab>\n\n    <ion-tab [root]="favoritesRoot" tabTitle="Favorites" tabIcon="information-circle"></ion-tab>\n\n</ion-tabs>\n\n'/*ion-inline-end:"C:\Users\ASUS\Desktop\AmericaCup-Ionic\src\pages\copa-america\copa-america.html"*/
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */]])
     ], CopaAmericaPage);

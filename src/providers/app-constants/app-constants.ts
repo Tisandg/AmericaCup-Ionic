@@ -14,10 +14,13 @@ export class AppConstantsProvider {
   groupB: string;  //Holds the Weather API service URL
   groupC: string; //Holds the geocoding API service Key
 
+  private key: string = "vAE4U0iDSR3grkyB";
+  private secret: string = "FaaKCQX4eCxC6x7B8MG2MYFEPIUh2tSI";
+
   constructor(public http: HttpClient) {
-    this.groupA = "https://livescore-api.com/api-client/scores/history.json?key=WJBD7vkDnW1zwvNI&secret=nJZX4HNHgOlDE5LAOneVTyzgvBQ17EKv&league=962";
-    this.groupB = "https://livescore-api.com/api-client/scores/history.json?key=WJBD7vkDnW1zwvNI&secret=nJZX4HNHgOlDE5LAOneVTyzgvBQ17EKv&league=961";
-    this.groupC = "https://livescore-api.com/api-client/scores/history.json?key=WJBD7vkDnW1zwvNI&secret=nJZX4HNHgOlDE5LAOneVTyzgvBQ17EKv&league=960";
+    this.groupA = "https://livescore-api.com/api-client/scores/history.json?key="+this.key+"&secret="+this.secret+"&league=962";
+    this.groupB = "https://livescore-api.com/api-client/scores/history.json?key="+this.key+"&secret="+this.secret+"&league=961";
+    this.groupC = "https://livescore-api.com/api-client/scores/history.json?key="+this.key+"&secret="+this.secret+"&league=960";
   }
 
   getGroupA(){

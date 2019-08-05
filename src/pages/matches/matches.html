@@ -14,11 +14,11 @@
     <ion-list>
       <ion-item *ngFor="let match of matches" detail>
           <ion-label>
-              {{match.home_name}}
+              {{match.nameTeamA}}
           </ion-label>
           <ion-label>
               <ion-thumbnail>
-                <ion-img [src]="match.home_name"></ion-img>
+                <ion-img [src]="match.imageTeamA"></ion-img>
               </ion-thumbnail>
           </ion-label>
           <ion-label>
@@ -26,11 +26,11 @@
           </ion-label>
           <ion-label>
               <ion-thumbnail>
-                <ion-img [src]="match.away_name"></ion-img>
+                <ion-img [src]="match.imageTeamB"></ion-img>
               </ion-thumbnail>
           </ion-label>
           <ion-label>
-              {{match.away_name}}
+              {{match.nameTeamB}}
           </ion-label>
       </ion-item>
     </ion-list>

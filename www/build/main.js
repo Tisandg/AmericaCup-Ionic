@@ -27,9 +27,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var AppConstantsProvider = /** @class */ (function () {
     function AppConstantsProvider(http) {
         this.http = http;
-        this.groupA = "https://livescore-api.com/api-client/scores/history.json?key=WJBD7vkDnW1zwvNI&secret=nJZX4HNHgOlDE5LAOneVTyzgvBQ17EKv&league=962";
-        this.groupB = "https://livescore-api.com/api-client/scores/history.json?key=WJBD7vkDnW1zwvNI&secret=nJZX4HNHgOlDE5LAOneVTyzgvBQ17EKv&league=961";
-        this.groupC = "https://livescore-api.com/api-client/scores/history.json?key=WJBD7vkDnW1zwvNI&secret=nJZX4HNHgOlDE5LAOneVTyzgvBQ17EKv&league=960";
+        this.key = "vAE4U0iDSR3grkyB";
+        this.secret = "FaaKCQX4eCxC6x7B8MG2MYFEPIUh2tSI";
+        this.groupA = "https://livescore-api.com/api-client/scores/history.json?key=" + this.key + "&secret=" + this.secret + "&league=962";
+        this.groupB = "https://livescore-api.com/api-client/scores/history.json?key=" + this.key + "&secret=" + this.secret + "&league=961";
+        this.groupC = "https://livescore-api.com/api-client/scores/history.json?key=" + this.key + "&secret=" + this.secret + "&league=960";
     }
     AppConstantsProvider.prototype.getGroupA = function () {
         return this.groupA;
@@ -77,11 +79,11 @@ var map = {
 		3
 	],
 	"../pages/favorites/favorites.module": [
-		277,
+		278,
 		2
 	],
 	"../pages/groups/groups.module": [
-		278,
+		277,
 		1
 	],
 	"../pages/matches/matches.module": [
@@ -162,8 +164,8 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["c" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_5__app_component__["a" /* MyApp */], {}, {
                     links: [
                         { loadChildren: '../pages/copa-america/copa-america.module#CopaAmericaPageModule', name: 'CopaAmericaPage', segment: 'copa-america', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/favorites/favorites.module#FavoritesPageModule', name: 'FavoritesPage', segment: 'favorites', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/groups/groups.module#GroupsPageModule', name: 'GroupsPage', segment: 'groups', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/favorites/favorites.module#FavoritesPageModule', name: 'FavoritesPage', segment: 'favorites', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/matches/matches.module#MatchesPageModule', name: 'MatchesPage', segment: 'matches', priority: 'low', defaultHistory: [] }
                     ]
                 })
@@ -221,7 +223,7 @@ var MyApp = /** @class */ (function () {
         });
     }
     MyApp = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({template:/*ion-inline-start:"D:\Development projects\Ionic\CopaAmerica\src\app\app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n'/*ion-inline-end:"D:\Development projects\Ionic\CopaAmerica\src\app\app.html"*/
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({template:/*ion-inline-start:"C:\Users\ASUS\Desktop\AmericaCup-Ionic\src\app\app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n\n'/*ion-inline-end:"C:\Users\ASUS\Desktop\AmericaCup-Ionic\src\app\app.html"*/
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
     ], MyApp);

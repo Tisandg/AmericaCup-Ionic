@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AppConstantsProvider } from '../../providers/app-constants/app-constants';
-import { LiveScoreApiProvider } from '../../providers/live-score-api/live-score-api';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Match } from '../Match';
+import { Team } from '../Team';
 
 /**
  * Generated class for the MatchesPage page.
@@ -20,78 +21,54 @@ import { HttpClient } from '@angular/common/http';
 export class MatchesPage {
 
   private appConstants: any;
-  private matchesServer: any;
-  private dataServer: any;
-  private LiveScoreApi: any;
-  private matches: Array<any>;
-  private matchesA: Array<any>;
-  private matchesB: Array<any>;
-  private matchesC: Array<any>;
 
-  /*matches: Array<any> =[
-    {
-      nameTeamA: "Colombia",
-      nameTeamB: "Argentina",
-      score: "2-0",
-      imageTeamA: "assets/imgs/Flags/colombia.png",
-      imageTeamB: "assets/imgs/Flags/argentina.png"
-    },
-    {
-      nameTeamA: "Qatar",
-      nameTeamB: "Colombia",
-      score: "1-0",
-      imageTeamA: "assets/imgs/Flags/qatar.png",
-      imageTeamB: "assets/imgs/Flags/colombia.png"
-    },
-    {
-      nameTeamA: "Paraguay",
-      nameTeamB: "Colombia",
-      score: "1-0",
-      imageTeamA: "assets/imgs/Flags/paraguay.png",
-      imageTeamB: "assets/imgs/Flags/colombia.png"
-    }
-  ];*/
+  private matches: Array<Match> = [];
+  private teams: Array<Team> = [];
+  private teamsId: Array<number> = [];
+
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public http:HttpClient, appConstants:AppConstantsProvider){
-    //appConstants:AppConstantsProvider, LiveScoreApi: LiveScoreApiProvider) {
     this.appConstants = appConstants;
-    //this.LiveScoreApi = LiveScoreApi;
-    this.getMatchesA();
-    //this.getMatchesB();
-    //this.getMatchesC();
+    this.getMatches(1);
+    this.getMatches(2);
+    this.getMatches(3);
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad MatchesPage');
   }
 
-  getMatchesA(){
-    let url = 'https://cors-anywhere.herokuapp.com/'+this.appConstants.getGroupA();
+  getMatches(groupId: number){
+    var url = 'https://cors-anywhere.herokuapp.com/';
+    if(groupId == 1){ url = url+this.appConstants.getGroupA();  }
+    if(groupId == 2){ url = url+this.appConstants.getGroupB();  }
+    if(groupId == 3){ url = url+this.appConstants.getGroupC();  }
+    //let url = 'https://cors-anywhere.herokuapp.com/'+this.appConstants.getGroupA();
     let data:Observable<any> = this.http.get(url);
     data.subscribe(result => {
-      console.log(result.data.match);
-      this.matches = result.data.match;
-      //this.matches = [this.matches, this.matchesA];
-    });
-  }
+      for (var item of result.data.match) {
+        console.log(item);
+        let imageA = "assets/imgs/Flags/"+item.home_name.toLowerCase()+".png";
+        let imageB = "assets/imgs/Flags/"+item.away_name.toLowerCase()+".png";
 
-  getMatchesB(){
-    let url = 'https://cors-anywhere.herokuapp.com/'+this.appConstants.getGroupB();
-    let data:Observable<any> = this.http.get(url);
-    data.subscribe(result => {
-      console.log(result.data.match);
-      this.matches = result.data.match;
-      //this.matches = [this.matches, this.matchesB];
-    });
-  }
+        let newMatch = new Match(item.id,item.home_id, item.away_id, item.home_name, item.away_name
+          ,item.score, item.date, item.status,imageA, imageB);
+        this.matches.push(newMatch);
 
-  getMatchesC(){
-    let url = 'https://cors-anywhere.herokuapp.com/'+this.appConstants.getGroupC();
-    let data:Observable<any> = this.http.get(url);
-    data.subscribe(result => {
-      console.log(result.data.match);
-      this.matches = result.data.match;
-      //this.matches = [this.matches, this.matchesC];
+        //Agregar equipos
+        if(this.teamsId.indexOf(item.home_id) == -1){
+          //Agregarlo
+          let newTeam = new Team(item.home_id, item.home_name, imageA, groupId, 0);
+          this.teams.push(newTeam);
+          this.teamsId.push(item.home_id);
+        }
+        if(this.teamsId.indexOf(item.away_id) == -1){
+          //Agregarlo
+          let newTeam = new Team(item.away_id, item.away_name, imageB, groupId, 0);
+          this.teams.push(newTeam);
+          this.teamsId.push(item.away_id);
+        }
+      }
     });
   }
 
