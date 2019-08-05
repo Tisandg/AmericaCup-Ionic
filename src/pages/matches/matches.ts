@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AppConstantsProvider } from '../../providers/app-constants/app-constants';
+import { DatabaseProvider } from '../../providers/database/database';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Match } from '../Match';
@@ -27,11 +28,12 @@ export class MatchesPage {
   private teamsId: Array<number> = [];
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
-    public http:HttpClient, appConstants:AppConstantsProvider){
+    public http:HttpClient, appConstants:AppConstantsProvider, private database: DatabaseProvider){
     this.appConstants = appConstants;
     this.getMatches(1);
     this.getMatches(2);
     this.getMatches(3);
+    this.mostrarMatches();
   }
 
   ionViewDidLoad() {
@@ -55,6 +57,14 @@ export class MatchesPage {
           ,item.score, item.date, item.status,imageA, imageB);
         this.matches.push(newMatch);
 
+        //save matches
+        this.database.saveMatch(newMatch).then( (data) =>{
+          console.log(data);
+        },(error) =>{
+          console.log(error);
+        });
+        console.log(newMatch);
+
         //Agregar equipos
         if(this.teamsId.indexOf(item.home_id) == -1){
           //Agregarlo
@@ -69,6 +79,15 @@ export class MatchesPage {
           this.teamsId.push(item.away_id);
         }
       }
+    });
+  }
+
+  mostrarMatches(){
+    console.log("Imprimiendo!!!!!!!!!!");
+    this.database.getMatches().then( (data) =>{
+      console.log(data);
+    },(error) =>{
+      console.log(error);
     });
   }
 

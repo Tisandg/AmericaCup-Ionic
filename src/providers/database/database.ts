@@ -1,0 +1,106 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+import { Match } from '../../pages/Match';
+
+/*
+  Generated class for the DatabaseProvider provider.
+
+  See https://angular.io/guide/dependency-injection for more info on providers
+  and Angular DI.
+*/
+@Injectable()
+export class DatabaseProvider {
+
+  private db:SQLiteObject;
+  private isOpen: boolean = false;
+
+  constructor(public http: HttpClient, public storage: SQLite) {
+    if(!this.isOpen){
+      this.storage = new SQLite();
+      this.storage.create({
+        name: "americacup.db", 
+        location:"default"
+      })
+        .then((db:SQLiteObject) => {
+          this.db = db;
+          db.executeSql(
+            `CREATE TABLE IF NOT EXISTS team (
+                id INTEGER PRIMARY KEY,
+                name TEXT,
+                image TEXT,
+                group_id INTEGER,
+                favorite INTEGER
+                );`,[])
+            .then(() => console.log('Executed SQL'))
+            .catch(e => console.log(e));
+
+          db.executeSql(
+            `CREATE TABLE IF NOT EXISTS team_detail (
+                id INTEGER PRIMARY KEY,
+                id_team INTEGER,
+                won INTEGER,
+                drawn INTEGER,
+                lost INTEGER,
+                points INTEGER
+            );`,[])
+            .then(() => console.log('Executed SQL'))
+            .catch(e => console.log(e));
+
+          db.executeSql(
+            `CREATE TABLE IF NOT EXISTS match (
+              id INTEGER PRIMARY KEY,
+              id_team_a INTEGER,
+              id_team_b INTEGER,
+              name_team_a TEXT,
+              name_team_b TEXT,
+              image_team_a TEXT,
+              image_team_b TEXT,
+              score TEXT,
+              date TEXT,
+              status TEXT`, [])
+            .then(() => console.log('Executed SQL'))
+            .catch(e => console.log(e));
+
+          this.isOpen = true;
+        }).catch((err)=>{
+          console.log("error detected creating tables", err);
+        });
+      }
+  }//End constructor
+
+  saveMatch(match: Match){
+    return new Promise((resolve, reject) => {
+      let sql = "INSERT OR UPDATE INTO match(id, id_team_a, id_team_b, name_team_a, name_team_b,"
+        +"image_team_a, image_team_b, score, date, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      this.db.executeSql(sql, [match.id, match.idTeamA, match.idTeamB, match.nameTeamA, match.nameTeamB,
+        match.imageTeamA, match.imageTeamB, match.score, match.date, match.status]).then((data) => {
+          resolve(data);
+        }, (error) => {
+          reject(error);
+        });
+    });
+  }
+
+  getMatches(){
+    return new Promise((resolve, reject) => {
+      this.db.executeSql("SELECT * FROM match",[])
+      .then((data) => {
+        var arrayMatches: Match[] = [];
+        if(data.rows.lenght > 0){
+          for(var i = 0; i< data.rows.lenght; i++){
+            let match = new Match(data.rows.item(i).id,data.rows.item(i).id_team_a, data.rows.item(i).id_team_b,
+            data.rows.item(i).name_team_a,data.rows.item(i).name_team_b, data.rows.item(i).score,
+            data.rows.item(i).date, data.rows.item(i).status, data.rows.item(i).image_team_a,
+            data.rows.item(i).image_team_b);
+            arrayMatches.push(match);
+          }
+        }
+        resolve(arrayMatches);
+      }, (error) => {
+        reject(error);
+      })
+    });
+  }
+
+}

@@ -8,6 +8,8 @@ import { MyApp } from './app.component';
 import { AppConstantsProvider } from '../providers/app-constants/app-constants';
 import { LiveScoreApiProvider } from '../providers/live-score-api/live-score-api';
 import { HttpClientModule } from '@angular/common/http';
+import { SQLite } from '@ionic-native/sqlite';
+import { DatabaseProvider } from '../providers/database/database';
 
 @NgModule({
   declarations: [
@@ -25,9 +27,11 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [
     StatusBar,
     SplashScreen,
+    SQLite,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AppConstantsProvider,
-    LiveScoreApiProvider
+    LiveScoreApiProvider,
+    DatabaseProvider
   ]
 })
 export class AppModule {}
