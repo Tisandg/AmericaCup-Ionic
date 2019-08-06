@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Match } from '../../pages/Match';
 import { Team } from '../../pages/Team';
+import { TeamDetail } from '../../pages/TeamDetail';
 
 /*
   Generated class for the DatabaseProvider provider.
@@ -38,8 +39,10 @@ export class DatabaseProvider {
 
           db.executeSql(
             `CREATE TABLE IF NOT EXISTS team_detail (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 id_team INTEGER,
+                image TEXT,
+                matches INTEGER,
                 won INTEGER,
                 drawn INTEGER,
                 lost INTEGER,
@@ -97,11 +100,26 @@ export class DatabaseProvider {
     });
   }
 
+  saveTeamDetail(teamDetail: TeamDetail){
+    return new Promise((resolve, reject) => {           
+      let sql = "INSERT OR UPDATE INTO team_detail(id, id_team,image, matches, won, drawn, lost, points)"
+        +"VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+      this.db.executeSql(sql, [teamDetail.id, teamDetail.idTeam, teamDetail.image, teamDetail.matches, teamDetail.won,teamDetail.drawn,
+        teamDetail.lost, teamDetail.points])
+      .then((data) => {
+          resolve(data);
+        }, (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
   getMatches(){
     return new Promise((resolve, reject) => {
       this.db.executeSql("SELECT * FROM match",[])
       .then((data) => {
-        var arrayMatches: Match[] = [];
+        var arrayMatches: Array<Match> = [];
         if(data.rows.lenght > 0){
           for(var i = 0; i< data.rows.lenght; i++){
             let match = new Match(data.rows.item(i).id,data.rows.item(i).id_team_a, data.rows.item(i).id_team_b,
@@ -163,6 +181,28 @@ export class DatabaseProvider {
           }
         }
         resolve(favorites);
+      }, (error) => {
+        reject(error);
+      })
+    });
+  }
+
+  getGroup(idGroup: number){
+    return new Promise((resolve, reject) => {
+      this.db.executeSql("SELECT team_detail.*,team.name FROM team_detail INNER JOIN team ON team_detail.id_team = team.id"
+                +"WHERE team.group_id = ?",[idGroup])
+      .then((data) => {
+        var teamGroup: Array<TeamDetail> = [];
+        if(data.rows.lenght > 0){
+          for(var i = 0; i< data.rows.lenght; i++){
+            var team = new TeamDetail(data.rows.item(i).id_team, data.rows.item(i).name,
+            data.rows.item(i).image, data.rows.item(i).matches, data.rows.item(i).won,
+            data.rows.item(i).drawn, data.rows.item(i).lost, data.rows.item(i).points);
+            team.id = data.rows.item(i).id;
+            teamGroup.push(team);
+          }
+        }
+        resolve(teamGroup);
       }, (error) => {
         reject(error);
       })

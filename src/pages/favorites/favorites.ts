@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Match } from '../Match';
 
 /**
  * Generated class for the FavoritesPage page.
@@ -14,6 +15,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'favorites.html',
 })
 export class FavoritesPage {
+
+  private matchesfavorites: Array<Match> = [];
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }

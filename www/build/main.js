@@ -79,7 +79,7 @@ var map = {
 		3
 	],
 	"../pages/favorites/favorites.module": [
-		280,
+		282,
 		2
 	],
 	"../pages/groups/groups.module": [
@@ -87,7 +87,7 @@ var map = {
 		1
 	],
 	"../pages/matches/matches.module": [
-		282,
+		284,
 		0
 	]
 };
@@ -117,6 +117,7 @@ module.exports = webpackAsyncContext;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_sqlite__ = __webpack_require__(156);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_Match__ = __webpack_require__(200);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_Team__ = __webpack_require__(201);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_TeamDetail__ = __webpack_require__(202);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -126,6 +127,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -154,7 +156,7 @@ var DatabaseProvider = /** @class */ (function () {
                 db.executeSql("CREATE TABLE IF NOT EXISTS team (\n                id INTEGER PRIMARY KEY,\n                name TEXT,\n                image TEXT,\n                group_id INTEGER,\n                favorite INTEGER\n                );", [])
                     .then(function () { return console.log('Executed SQL'); })
                     .catch(function (e) { return console.log(e); });
-                db.executeSql("CREATE TABLE IF NOT EXISTS team_detail (\n                id INTEGER PRIMARY KEY,\n                id_team INTEGER,\n                won INTEGER,\n                drawn INTEGER,\n                lost INTEGER,\n                points INTEGER\n            );", [])
+                db.executeSql("CREATE TABLE IF NOT EXISTS team_detail (\n                id INTEGER PRIMARY KEY AUTOINCREMENT,\n                id_team INTEGER,\n                image TEXT,\n                matches INTEGER,\n                won INTEGER,\n                drawn INTEGER,\n                lost INTEGER,\n                points INTEGER\n            );", [])
                     .then(function () { return console.log('Executed SQL'); })
                     .catch(function (e) { return console.log(e); });
                 db.executeSql("CREATE TABLE IF NOT EXISTS match (\n              id INTEGER PRIMARY KEY,\n              id_team_a INTEGER,\n              id_team_b INTEGER,\n              name_team_a TEXT,\n              name_team_b TEXT,\n              image_team_a TEXT,\n              image_team_b TEXT,\n              score TEXT,\n              date TEXT,\n              status TEXT", [])
@@ -185,6 +187,20 @@ var DatabaseProvider = /** @class */ (function () {
             var sql = "INSERT OR UPDATE INTO team(id, name, image, group_id, favorite)"
                 + "VALUES(?, ?, ?, ?, ?)";
             _this.db.executeSql(sql, [team.idTeam, team.name, team.image, team.group_id])
+                .then(function (data) {
+                resolve(data);
+            }, function (error) {
+                reject(error);
+            });
+        });
+    };
+    DatabaseProvider.prototype.saveTeamDetail = function (teamDetail) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var sql = "INSERT OR UPDATE INTO team_detail(id, id_team,image, matches, won, drawn, lost, points)"
+                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+            _this.db.executeSql(sql, [teamDetail.id, teamDetail.idTeam, teamDetail.image, teamDetail.matches, teamDetail.won, teamDetail.drawn,
+                teamDetail.lost, teamDetail.points])
                 .then(function (data) {
                 resolve(data);
             }, function (error) {
@@ -258,12 +274,31 @@ var DatabaseProvider = /** @class */ (function () {
             });
         });
     };
+    DatabaseProvider.prototype.getGroup = function (idGroup) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.db.executeSql("SELECT team_detail.*,team.name FROM team_detail INNER JOIN team ON team_detail.id_team = team.id"
+                + "WHERE team.group_id = ?", [idGroup])
+                .then(function (data) {
+                var teamGroup = [];
+                if (data.rows.lenght > 0) {
+                    for (var i = 0; i < data.rows.lenght; i++) {
+                        var team = new __WEBPACK_IMPORTED_MODULE_5__pages_TeamDetail__["a" /* TeamDetail */](data.rows.item(i).id_team, data.rows.item(i).name, data.rows.item(i).image, data.rows.item(i).matches, data.rows.item(i).won, data.rows.item(i).drawn, data.rows.item(i).lost, data.rows.item(i).points);
+                        team.id = data.rows.item(i).id;
+                        teamGroup.push(team);
+                    }
+                }
+                resolve(teamGroup);
+            }, function (error) {
+                reject(error);
+            });
+        });
+    };
     DatabaseProvider = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
-        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_common_http__["a" /* HttpClient */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_common_http__["a" /* HttpClient */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__ionic_native_sqlite__["a" /* SQLite */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__ionic_native_sqlite__["a" /* SQLite */]) === "function" && _b || Object])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_common_http__["a" /* HttpClient */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_sqlite__["a" /* SQLite */]])
     ], DatabaseProvider);
     return DatabaseProvider;
-    var _a, _b;
 }());
 
 //# sourceMappingURL=database.js.map
@@ -319,9 +354,32 @@ var Team = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TeamDetail; });
+var TeamDetail = /** @class */ (function () {
+    function TeamDetail(idTeam, name, image, matches, won, drawn, lost, points) {
+        this.idTeam = idTeam;
+        this.name = name;
+        this.image = image;
+        this.matches = matches;
+        this.won = won;
+        this.drawn = drawn;
+        this.lost = lost;
+        this.points = points;
+    }
+    return TeamDetail;
+}());
+
+//# sourceMappingURL=TeamDetail.js.map
+
+/***/ }),
+
+/***/ 203:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(203);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(223);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(204);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(224);
 
 
 Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
@@ -329,7 +387,7 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 
 /***/ }),
 
-/***/ 223:
+/***/ 224:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -339,9 +397,9 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(101);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(197);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__ = __webpack_require__(198);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(277);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(278);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_app_constants_app_constants__ = __webpack_require__(102);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_live_score_api_live_score_api__ = __webpack_require__(278);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_live_score_api_live_score_api__ = __webpack_require__(279);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__angular_common_http__ = __webpack_require__(40);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__ionic_native_sqlite__ = __webpack_require__(156);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__providers_database_database__ = __webpack_require__(199);
@@ -375,10 +433,10 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_8__angular_common_http__["b" /* HttpClientModule */],
                 __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["c" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_5__app_component__["a" /* MyApp */], {}, {
                     links: [
-                        { loadChildren: '../pages/favorites/favorites.module#FavoritesPageModule', name: 'FavoritesPage', segment: 'favorites', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/copa-america/copa-america.module#CopaAmericaPageModule', name: 'CopaAmericaPage', segment: 'copa-america', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/matches/matches.module#MatchesPageModule', name: 'MatchesPage', segment: 'matches', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/groups/groups.module#GroupsPageModule', name: 'GroupsPage', segment: 'groups', priority: 'low', defaultHistory: [] }
+                        { loadChildren: '../pages/favorites/favorites.module#FavoritesPageModule', name: 'FavoritesPage', segment: 'favorites', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/groups/groups.module#GroupsPageModule', name: 'GroupsPage', segment: 'groups', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/matches/matches.module#MatchesPageModule', name: 'MatchesPage', segment: 'matches', priority: 'low', defaultHistory: [] }
                     ]
                 })
             ],
@@ -404,7 +462,7 @@ var AppModule = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 277:
+/***/ 278:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -448,7 +506,7 @@ var MyApp = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 278:
+/***/ 279:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -456,7 +514,7 @@ var MyApp = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(40);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_constants_app_constants__ = __webpack_require__(102);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(279);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(280);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -504,5 +562,5 @@ var LiveScoreApiProvider = /** @class */ (function () {
 
 /***/ })
 
-},[202]);
+},[203]);
 //# sourceMappingURL=main.js.map

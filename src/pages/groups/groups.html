@@ -11,5 +11,84 @@
 </ion-header>
 
 <ion-content padding>
-    <ion-label>This is Groups page</ion-label>
+  <ion-label>Group A</ion-label>
+  <ion-list>
+    <ion-item>
+        <ion-label>#</ion-label>
+        <ion-label>Teams</ion-label>
+        <ion-label>M</ion-label>
+        <ion-label>W</ion-label>
+        <ion-label>D</ion-label>
+        <ion-label>L</ion-label>
+        <ion-label>Pts</ion-label>
+    </ion-item>
+    <ion-item *ngFor="let team of groupA; index as i" detail>
+        <ion-label>{{i+1}}</ion-label>
+        <ion-label>
+            <ion-thumbnail>
+              <ion-img [src]="team.image" width="48" height="48"></ion-img>
+            </ion-thumbnail>
+            {{team.name}}
+        </ion-label>
+        <ion-label>{{team.matches}}</ion-label>
+        <ion-label>{{team.won}}</ion-label>
+        <ion-label>{{team.drawn}}</ion-label>
+        <ion-label>{{team.lost}}</ion-label>
+        <ion-label>{{team.points}}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-label>Group B</ion-label>
+  <ion-list>
+      <ion-item>
+          <ion-label>#</ion-label>
+          <ion-label>Teams</ion-label>
+          <ion-label>M</ion-label>
+          <ion-label>W</ion-label>
+          <ion-label>D</ion-label>
+          <ion-label>L</ion-label>
+          <ion-label>Pts</ion-label>
+      </ion-item>
+      <ion-item *ngFor="let team of groupB; index as i" detail>
+          <ion-label>{{i+1}}</ion-label>
+          <ion-label>
+              <ion-thumbnail>
+                <ion-img [src]="team.image" width="48" height="48"></ion-img>
+              </ion-thumbnail>
+              {{team.name}}
+          </ion-label>
+          <ion-label>{{team.matches}}</ion-label>
+          <ion-label>{{team.won}}</ion-label>
+          <ion-label>{{team.drawn}}</ion-label>
+          <ion-label>{{team.lost}}</ion-label>
+          <ion-label>{{team.points}}</ion-label>
+      </ion-item>
+  </ion-list>
+
+  <ion-label>Group C</ion-label>
+  <ion-list>
+    <ion-item>
+        <ion-label>#</ion-label>
+        <ion-label>Teams</ion-label>
+        <ion-label>M</ion-label>
+        <ion-label>W</ion-label>
+        <ion-label>D</ion-label>
+        <ion-label>L</ion-label>
+        <ion-label>Pts</ion-label>
+    </ion-item>
+    <ion-item *ngFor="let team of groupC; index as i" detail>
+        <ion-label>{{i+1}}</ion-label>
+        <ion-label>
+            <ion-thumbnail>
+              <ion-img [src]="team.image" width="48" height="48"></ion-img>
+            </ion-thumbnail>
+            {{team.name}}
+        </ion-label>
+        <ion-label>{{team.matches}}</ion-label>
+        <ion-label>{{team.won}}</ion-label>
+        <ion-label>{{team.drawn}}</ion-label>
+        <ion-label>{{team.lost}}</ion-label>
+        <ion-label>{{team.points}}</ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
