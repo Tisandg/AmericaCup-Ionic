@@ -75,19 +75,19 @@ webpackEmptyAsyncContext.id = 114;
 
 var map = {
 	"../pages/copa-america/copa-america.module": [
-		278,
+		281,
 		3
 	],
 	"../pages/favorites/favorites.module": [
-		279,
+		280,
 		2
 	],
 	"../pages/groups/groups.module": [
-		280,
+		283,
 		1
 	],
 	"../pages/matches/matches.module": [
-		281,
+		282,
 		0
 	]
 };
@@ -115,7 +115,8 @@ module.exports = webpackAsyncContext;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(40);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_sqlite__ = __webpack_require__(156);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_Match__ = __webpack_require__(286);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_Match__ = __webpack_require__(200);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_Team__ = __webpack_require__(201);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -125,6 +126,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -177,6 +179,19 @@ var DatabaseProvider = /** @class */ (function () {
             });
         });
     };
+    DatabaseProvider.prototype.saveTeams = function (team) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var sql = "INSERT OR UPDATE INTO team(id, name, image, group_id, favorite)"
+                + "VALUES(?, ?, ?, ?, ?)";
+            _this.db.executeSql(sql, [team.idTeam, team.name, team.image, team.group_id])
+                .then(function (data) {
+                resolve(data);
+            }, function (error) {
+                reject(error);
+            });
+        });
+    };
     DatabaseProvider.prototype.getMatches = function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
@@ -190,6 +205,54 @@ var DatabaseProvider = /** @class */ (function () {
                     }
                 }
                 resolve(arrayMatches);
+            }, function (error) {
+                reject(error);
+            });
+        });
+    };
+    DatabaseProvider.prototype.getTeams = function (idGroup) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.db.executeSql("SELECT * FROM team WHERE id = ?", [idGroup])
+                .then(function (data) {
+                var arrayTeams = [];
+                if (data.rows.lenght > 0) {
+                    for (var i = 0; i < data.rows.lenght; i++) {
+                        var team = new __WEBPACK_IMPORTED_MODULE_4__pages_Team__["a" /* Team */](data.rows.item(i).id, data.rows.item(i).name, data.rows.item(i).image, data.rows.item(i).group_id, data.rows.item(i).favorite);
+                        arrayTeams.push(team);
+                    }
+                }
+                resolve(arrayTeams);
+            }, function (error) {
+                reject(error);
+            });
+        });
+    };
+    DatabaseProvider.prototype.changeFavorite = function (idFavorite, valor) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var sql = "UPDATE Team set favorite = ? WHERE id = ?";
+            _this.db.executeSql(sql, [valor, idFavorite])
+                .then(function (data) {
+                resolve(data);
+            }, function (error) {
+                reject(error);
+            });
+        });
+    };
+    DatabaseProvider.prototype.getFavoriteTeams = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.db.executeSql("SELECT * FROM team WHERE favorite = ?", [1])
+                .then(function (data) {
+                var favorites = [];
+                if (data.rows.lenght > 0) {
+                    for (var i = 0; i < data.rows.lenght; i++) {
+                        var team = new __WEBPACK_IMPORTED_MODULE_4__pages_Team__["a" /* Team */](data.rows.item(i).id, data.rows.item(i).name, data.rows.item(i).image, data.rows.item(i).group_id, data.rows.item(i).favorite);
+                        favorites.push(team);
+                    }
+                }
+                resolve(favorites);
             }, function (error) {
                 reject(error);
             });
@@ -211,9 +274,54 @@ var DatabaseProvider = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Match; });
+var Match = /** @class */ (function () {
+    function Match(id, idTeamA, idTeamB, nameTeamA, nameTeamB, score, date, status, imageA, imageB) {
+        this.id = id;
+        this.idTeamA = idTeamA;
+        this.idTeamB = idTeamB;
+        this.nameTeamA = nameTeamA;
+        this.nameTeamB = nameTeamB;
+        this.score = score;
+        this.date = date;
+        this.status = status;
+        this.imageTeamA = imageA;
+        this.imageTeamB = imageB;
+    }
+    return Match;
+}());
+
+//# sourceMappingURL=Match.js.map
+
+/***/ }),
+
+/***/ 201:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Team; });
+var Team = /** @class */ (function () {
+    function Team(id, name, image, group_id, favorite) {
+        this.idTeam = id;
+        this.name = name;
+        this.image = image;
+        this.group_id = group_id;
+        this.favorite = favorite;
+    }
+    return Team;
+}());
+
+//# sourceMappingURL=Team.js.map
+
+/***/ }),
+
+/***/ 202:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(201);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(221);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(223);
 
 
 Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
@@ -221,7 +329,7 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 
 /***/ }),
 
-/***/ 221:
+/***/ 223:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -231,9 +339,9 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(101);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(197);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__ = __webpack_require__(198);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(275);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(277);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_app_constants_app_constants__ = __webpack_require__(102);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_live_score_api_live_score_api__ = __webpack_require__(276);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_live_score_api_live_score_api__ = __webpack_require__(278);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__angular_common_http__ = __webpack_require__(40);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__ionic_native_sqlite__ = __webpack_require__(156);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__providers_database_database__ = __webpack_require__(199);
@@ -267,10 +375,10 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_8__angular_common_http__["b" /* HttpClientModule */],
                 __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["c" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_5__app_component__["a" /* MyApp */], {}, {
                     links: [
-                        { loadChildren: '../pages/copa-america/copa-america.module#CopaAmericaPageModule', name: 'CopaAmericaPage', segment: 'copa-america', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/favorites/favorites.module#FavoritesPageModule', name: 'FavoritesPage', segment: 'favorites', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/groups/groups.module#GroupsPageModule', name: 'GroupsPage', segment: 'groups', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/matches/matches.module#MatchesPageModule', name: 'MatchesPage', segment: 'matches', priority: 'low', defaultHistory: [] }
+                        { loadChildren: '../pages/copa-america/copa-america.module#CopaAmericaPageModule', name: 'CopaAmericaPage', segment: 'copa-america', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/matches/matches.module#MatchesPageModule', name: 'MatchesPage', segment: 'matches', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/groups/groups.module#GroupsPageModule', name: 'GroupsPage', segment: 'groups', priority: 'low', defaultHistory: [] }
                     ]
                 })
             ],
@@ -296,7 +404,7 @@ var AppModule = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 275:
+/***/ 277:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -340,7 +448,7 @@ var MyApp = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 276:
+/***/ 278:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -348,7 +456,7 @@ var MyApp = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(40);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_constants_app_constants__ = __webpack_require__(102);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(277);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(279);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -394,32 +502,7 @@ var LiveScoreApiProvider = /** @class */ (function () {
 
 //# sourceMappingURL=live-score-api.js.map
 
-/***/ }),
-
-/***/ 286:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Match; });
-var Match = /** @class */ (function () {
-    function Match(id, idTeamA, idTeamB, nameTeamA, nameTeamB, score, date, status, imageA, imageB) {
-        this.id = id;
-        this.idTeamA = idTeamA;
-        this.idTeamB = idTeamB;
-        this.nameTeamA = nameTeamA;
-        this.nameTeamB = nameTeamB;
-        this.score = score;
-        this.date = date;
-        this.status = status;
-        this.imageTeamA = imageA;
-        this.imageTeamB = imageB;
-    }
-    return Match;
-}());
-
-//# sourceMappingURL=Match.js.map
-
 /***/ })
 
-},[200]);
+},[202]);
 //# sourceMappingURL=main.js.map

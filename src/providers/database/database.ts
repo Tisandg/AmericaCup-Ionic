@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Match } from '../../pages/Match';
+import { Team } from '../../pages/Team';
 
 /*
   Generated class for the DatabaseProvider provider.
@@ -82,6 +83,20 @@ export class DatabaseProvider {
     });
   }
 
+  saveTeams(team: Team){
+    return new Promise((resolve, reject) => {                
+      let sql = "INSERT OR UPDATE INTO team(id, name, image, group_id, favorite)"
+        +"VALUES(?, ?, ?, ?, ?)";
+      this.db.executeSql(sql, [team.idTeam, team.name, team.image, team.group_id])
+      .then((data) => {
+          resolve(data);
+        }, (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
   getMatches(){
     return new Promise((resolve, reject) => {
       this.db.executeSql("SELECT * FROM match",[])
@@ -97,6 +112,57 @@ export class DatabaseProvider {
           }
         }
         resolve(arrayMatches);
+      }, (error) => {
+        reject(error);
+      })
+    });
+  }
+
+  getTeams(idGroup:number){
+    return new Promise((resolve, reject) => {
+      this.db.executeSql("SELECT * FROM team WHERE id = ?",[idGroup])
+      .then((data) => {
+        var arrayTeams: Team[] = [];
+        if(data.rows.lenght > 0){
+          for(var i = 0; i< data.rows.lenght; i++){
+            let team = new Team(data.rows.item(i).id,data.rows.item(i).name, 
+              data.rows.item(i).image, data.rows.item(i).group_id, data.rows.item(i).favorite);
+            arrayTeams.push(team);
+          }
+        }
+        resolve(arrayTeams);
+      }, (error) => {
+        reject(error);
+      })
+    });
+  }
+
+  changeFavorite(idFavorite:number, valor:number){
+    return new Promise((resolve, reject) => {                
+      let sql = "UPDATE Team set favorite = ? WHERE id = ?";
+      this.db.executeSql(sql, [valor, idFavorite])
+      .then((data) => {
+          resolve(data);
+        }, (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
+  getFavoriteTeams(){
+    return new Promise((resolve, reject) => {
+      this.db.executeSql("SELECT * FROM team WHERE favorite = ?",[1])
+      .then((data) => {
+        var favorites: Team[] = [];
+        if(data.rows.lenght > 0){
+          for(var i = 0; i< data.rows.lenght; i++){
+            let team = new Team(data.rows.item(i).id,data.rows.item(i).name, 
+              data.rows.item(i).image, data.rows.item(i).group_id, data.rows.item(i).favorite);
+            favorites.push(team);
+          }
+        }
+        resolve(favorites);
       }, (error) => {
         reject(error);
       })

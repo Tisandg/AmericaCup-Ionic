@@ -49,7 +49,6 @@ export class MatchesPage {
     let data:Observable<any> = this.http.get(url);
     data.subscribe(result => {
       for (var item of result.data.match) {
-        console.log(item);
         let imageA = "assets/imgs/Flags/"+item.home_name.toLowerCase()+".png";
         let imageB = "assets/imgs/Flags/"+item.away_name.toLowerCase()+".png";
 
@@ -71,12 +70,24 @@ export class MatchesPage {
           let newTeam = new Team(item.home_id, item.home_name, imageA, groupId, 0);
           this.teams.push(newTeam);
           this.teamsId.push(item.home_id);
+          //Save team in local base
+          this.database.saveTeams(newTeam).then( (data) =>{
+            console.log(data);
+          },(error) =>{
+            console.log(error);
+          });
         }
         if(this.teamsId.indexOf(item.away_id) == -1){
           //Agregarlo
           let newTeam = new Team(item.away_id, item.away_name, imageB, groupId, 0);
           this.teams.push(newTeam);
           this.teamsId.push(item.away_id);
+          //Save team in local base
+          this.database.saveTeams(newTeam).then( (data) =>{
+            console.log(data);
+          },(error) =>{
+            console.log(error);
+          });
         }
       }
     });
