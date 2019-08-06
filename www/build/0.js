@@ -1,14 +1,14 @@
 webpackJsonp([0],{
 
-/***/ 284:
+/***/ 287:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MatchesPageModule", function() { return MatchesPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(101);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__matches__ = __webpack_require__(288);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(103);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__matches__ = __webpack_require__(291);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -38,19 +38,18 @@ var MatchesPageModule = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 288:
+/***/ 291:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MatchesPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(101);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_app_constants_app_constants__ = __webpack_require__(102);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_database_database__ = __webpack_require__(199);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(103);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_app_constants_app_constants__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_database_database__ = __webpack_require__(104);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_common_http__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Match__ = __webpack_require__(200);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Team__ = __webpack_require__(201);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__TeamDetail__ = __webpack_require__(202);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Match__ = __webpack_require__(261);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_storage__ = __webpack_require__(201);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -67,7 +66,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
 //import { GroupsPage } from '../groups/groups';
 /**
  * Generated class for the MatchesPage page.
@@ -76,22 +74,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Ionic pages and navigation.
  */
 var MatchesPage = /** @class */ (function () {
-    //private Group: GroupsPage;
-    function MatchesPage(navCtrl, navParams, http, appConstants, database) {
+    function MatchesPage(navCtrl, navParams, http, appConstants, database, storage) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.http = http;
         this.database = database;
+        this.storage = storage;
         this.matches = [];
-        this.teams = [];
         this.teamsId = [];
-        this.matchesFinal = [];
         this.appConstants = appConstants;
-        //this.Group = group;
         this.getMatches(1);
         this.getMatches(2);
         this.getMatches(3);
-        this.mostrarMatches();
     }
     MatchesPage.prototype.ionViewDidLoad = function () {
         console.log('ionViewDidLoad MatchesPage');
@@ -108,72 +102,67 @@ var MatchesPage = /** @class */ (function () {
         if (groupId == 3) {
             url = url + this.appConstants.getGroupC();
         }
-        //let url = 'https://cors-anywhere.herokuapp.com/'+this.appConstants.getGroupA();
         var data = this.http.get(url);
         data.subscribe(function (result) {
-            var teamsIdAux = [];
+            var idsTeam = [];
             for (var _i = 0, _a = result.data.match; _i < _a.length; _i++) {
                 var item = _a[_i];
                 var imageA = "assets/imgs/Flags/" + item.home_name.toLowerCase() + ".png";
                 var imageB = "assets/imgs/Flags/" + item.away_name.toLowerCase() + ".png";
+                //Guardando en almacenamiento local
                 var newMatch = new __WEBPACK_IMPORTED_MODULE_5__Match__["a" /* Match */](item.id, item.home_id, item.away_id, item.home_name, item.away_name, item.score, item.date, item.status, imageA, imageB);
                 _this.matches.push(newMatch);
-                //save matches
-                _this.database.saveMatch(newMatch).then(function (data) {
-                    console.log(data);
-                }, function (error) {
-                    console.log(error);
-                });
-                console.log(newMatch);
+                var infoMatch = "" + item.home_name + "," + item.away_name + "," + item.score + "" + item.date + ","
+                    + item.status + "," + imageA + "" + imageB;
+                _this.storage.set("match-" + item.id, infoMatch);
                 //Agregar equipos
                 if (_this.teamsId.indexOf(item.home_id) == -1) {
                     //Agregarlo
-                    var newTeam = new __WEBPACK_IMPORTED_MODULE_6__Team__["a" /* Team */](item.home_id, item.home_name, imageA, groupId, 0);
-                    _this.teams.push(newTeam);
                     _this.teamsId.push(item.home_id);
-                    teamsIdAux.push(item.home_id);
-                    //Save team in local base
-                    _this.database.saveTeams(newTeam).then(function (data) {
-                        console.log(data);
-                    }, function (error) {
-                        console.log(error);
-                    });
+                    var infoTeam = "" + item.home_name + "," + imageA;
+                    _this.storage.set("team-" + item.home_id, infoTeam);
                 }
                 if (_this.teamsId.indexOf(item.away_id) == -1) {
                     //Agregarlo
-                    var newTeam = new __WEBPACK_IMPORTED_MODULE_6__Team__["a" /* Team */](item.away_id, item.away_name, imageB, groupId, 0);
-                    _this.teams.push(newTeam);
-                    _this.teamsId.push(item.away_id);
-                    teamsIdAux.push(item.away_id);
-                    //Save team in local base
-                    _this.database.saveTeams(newTeam).then(function (data) {
-                        console.log(data);
-                    }, function (error) {
-                        console.log(error);
-                    });
+                    var infoTeam = "" + item.away_name + "," + imageB;
+                    _this.storage.set("team-" + item.away_id, infoTeam);
+                }
+                if (idsTeam.indexOf(item.away_id) == -1) {
+                    idsTeam.push(item.away_id);
+                    console.log("Agregado: " + item.away_id);
+                }
+                if (idsTeam.indexOf(item.home_id) == -1) {
+                    idsTeam.push(item.home_id);
+                    console.log("Agregado: " + item.home_id);
                 }
             }
-            _this.database.getMatches().then(function (data) {
-                console.log(data);
-                for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
-                    var m = data_1[_i];
-                    _this.matchesFinal.push(m);
+            //Guardar info Group
+            var idsEquipo;
+            var primero = true;
+            console.log("Tamaño: " + idsTeam.length);
+            for (var _b = 0, idsTeam_1 = idsTeam; _b < idsTeam_1.length; _b++) {
+                var idTeam = idsTeam_1[_b];
+                if (primero) {
+                    idsEquipo = "" + idTeam;
+                    primero = false;
                 }
-            }, function (error) {
-                console.log(error);
-            });
+                else {
+                    idsEquipo = idsEquipo + "," + idTeam;
+                }
+            }
+            _this.storage.set("group-" + groupId, idsEquipo);
             //After getting the teams, we'll calculate 
             //the points of each team (Position table)
-            for (var _b = 0, teamsIdAux_1 = teamsIdAux; _b < teamsIdAux_1.length; _b++) {
-                var team = teamsIdAux_1[_b];
+            for (var _c = 0, idsTeam_2 = idsTeam; _c < idsTeam_2.length; _c++) {
+                var team = idsTeam_2[_c];
                 var won = 0;
                 var drawn = 0;
                 var lost = 0;
                 var points = 0;
-                var name;
+                var name = "";
                 var numMatches = 0;
-                for (var _c = 0, _d = _this.matches; _c < _d.length; _c++) {
-                    var matchItem = _d[_c];
+                for (var _d = 0, _e = _this.matches; _d < _e.length; _d++) {
+                    var matchItem = _e[_d];
                     if (matchItem.idTeamA == team) {
                         name = matchItem.nameTeamA;
                         numMatches++;
@@ -208,34 +197,20 @@ var MatchesPage = /** @class */ (function () {
                 }
                 points = (won * 3) + (drawn * 1);
                 var image = "assets/imgs/Flags/" + name.toLowerCase() + ".png";
-                var newTeamDetail = new __WEBPACK_IMPORTED_MODULE_7__TeamDetail__["a" /* TeamDetail */](team, name, image, numMatches, won, drawn, lost, points);
-                /*if(groupId == 1){ this.group.addGroupA(newTeamDetail);  }
-                if(groupId == 2){ this.group.addGroupB(newTeamDetail);  }
-                if(groupId == 3){ this.group.addGroupC(newTeamDetail);  }*/
-                _this.database.saveTeamDetail(newTeamDetail).then(function (data) {
-                    console.log(data);
-                }, function (error) {
-                    console.log(error);
-                });
+                var infoDetail = "" + name + "," + image + "," + numMatches + "," + won + "," + drawn
+                    + "," + lost + "," + points;
+                _this.storage.set("detail-" + team, infoDetail);
             }
-        });
-    };
-    MatchesPage.prototype.mostrarMatches = function () {
-        console.log("Imprimiendo!!!!!!!!!!");
-        this.database.getMatches().then(function (data) {
-            console.log(data);
-        }, function (error) {
-            console.log(error);
         });
     };
     MatchesPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-matches',template:/*ion-inline-start:"C:\Users\ASUS\Desktop\AmericaCup-Ionic\src\pages\matches\matches.html"*/'<!--\n\n  Generated template for the MatchesPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n  <ion-navbar>\n\n    <ion-title>Matches</ion-title>\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content padding>\n\n    <ion-list>\n\n      <ion-item *ngFor="let match of matches" detail>\n\n          <ion-label>\n\n              {{match.nameTeamA}}\n\n          </ion-label>\n\n          <ion-label>\n\n              <ion-thumbnail>\n\n                <ion-img [src]="match.imageTeamA"></ion-img>\n\n              </ion-thumbnail>\n\n          </ion-label>\n\n          <ion-label>\n\n              {{match.score}}\n\n          </ion-label>\n\n          <ion-label>\n\n              <ion-thumbnail>\n\n                <ion-img [src]="match.imageTeamB"></ion-img>\n\n              </ion-thumbnail>\n\n          </ion-label>\n\n          <ion-label>\n\n              {{match.nameTeamB}}\n\n          </ion-label>\n\n      </ion-item>\n\n    </ion-list>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ASUS\Desktop\AmericaCup-Ionic\src\pages\matches\matches.html"*/,
+            selector: 'page-matches',template:/*ion-inline-start:"C:\Users\ASUS\Desktop\AmericaCup-Ionic\src\pages\matches\matches.html"*/'<!--\n\n  Generated template for the MatchesPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n  <ion-navbar>\n\n    <ion-title>Matches</ion-title>\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content padding>\n\n    <ion-list>\n\n      <ion-item *ngIf="matches.length == 0"> \n\n        Empty\n\n      </ion-item>\n\n      <ion-item *ngFor="let match of matches" detail>\n\n          <ion-label>\n\n              {{match.nameTeamA}}\n\n          </ion-label>\n\n          <ion-label>\n\n              <ion-thumbnail>\n\n                <ion-img [src]="match.imageTeamA"></ion-img>\n\n              </ion-thumbnail>\n\n          </ion-label>\n\n          <ion-label>\n\n              {{match.score}}\n\n          </ion-label>\n\n          <ion-label>\n\n              <ion-thumbnail>\n\n                <ion-img [src]="match.imageTeamB"></ion-img>\n\n              </ion-thumbnail>\n\n          </ion-label>\n\n          <ion-label>\n\n              {{match.nameTeamB}}\n\n          </ion-label>\n\n      </ion-item>\n\n    </ion-list>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ASUS\Desktop\AmericaCup-Ionic\src\pages\matches\matches.html"*/,
         }),
-        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4__angular_common_http__["a" /* HttpClient */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__angular_common_http__["a" /* HttpClient */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__providers_app_constants_app_constants__["a" /* AppConstantsProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_app_constants_app_constants__["a" /* AppConstantsProvider */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__providers_database_database__["a" /* DatabaseProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_database_database__["a" /* DatabaseProvider */]) === "function" && _e || Object])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4__angular_common_http__["a" /* HttpClient */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__angular_common_http__["a" /* HttpClient */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__providers_app_constants_app_constants__["a" /* AppConstantsProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_app_constants_app_constants__["a" /* AppConstantsProvider */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__providers_database_database__["a" /* DatabaseProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_database_database__["a" /* DatabaseProvider */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_6__ionic_storage__["b" /* Storage */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__ionic_storage__["b" /* Storage */]) === "function" && _f || Object])
     ], MatchesPage);
     return MatchesPage;
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f;
 }());
 
 //# sourceMappingURL=matches.js.map

@@ -1,6 +1,6 @@
 webpackJsonp([1],{
 
-/***/ 283:
+/***/ 280:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8,7 +8,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GroupsPageModule", function() { return GroupsPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(101);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__groups__ = __webpack_require__(287);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__groups__ = __webpack_require__(284);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -38,14 +38,14 @@ var GroupsPageModule = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 287:
+/***/ 284:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GroupsPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(101);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_database_database__ = __webpack_require__(199);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_database_database__ = __webpack_require__(102);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -69,39 +69,45 @@ var GroupsPage = /** @class */ (function () {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.database = database;
-        this.getInfoGroup(1);
+        /*this.getInfoGroup(1);
         this.getInfoGroup(2);
-        this.getInfoGroup(3);
+        this.getInfoGroup(3);*/
     }
-    GroupsPage.prototype.getInfoGroup = function (idGroup) {
-        var _this = this;
-        //get group info
-        this.database.getGroup(1).then(function (data) {
-            console.log(data);
-            if (idGroup == 1) {
-                for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
-                    var teamA = data_1[_i];
-                    _this.groupA.push(teamA);
-                }
-            }
-            if (idGroup == 2) {
-                for (var _a = 0, data_2 = data; _a < data_2.length; _a++) {
-                    var teamB = data_2[_a];
-                    _this.groupB.push(teamB);
-                }
-            }
-            if (idGroup == 3) {
-                for (var _b = 0, data_3 = data; _b < data_3.length; _b++) {
-                    var teamC = data_3[_b];
-                    _this.groupC.push(teamC);
-                }
-            }
-        }, function (error) {
-            console.log(error);
-        });
-    };
+    /*getInfoGroup(idGroup: number){
+      //get group info
+      this.database.getGroup(1).then( (data: Array<TeamDetail>) =>{
+        console.log(data);
+        if(idGroup == 1){
+          for(var teamA of data){
+            this.groupA.push(teamA);
+          }
+        }
+        if(idGroup == 2){
+          for(var teamB of data){
+            this.groupB.push(teamB);
+          }
+        }
+        if(idGroup == 3){
+          for(var teamC of data){
+            this.groupC.push(teamC);
+          }
+        }
+      },(error) =>{
+        console.log(error);
+      });
+  
+    }*/
     GroupsPage.prototype.ionViewDidLoad = function () {
         console.log('ionViewDidLoad GroupsPage');
+    };
+    GroupsPage.prototype.addGroupA = function (team) {
+        this.groupA.push(team);
+    };
+    GroupsPage.prototype.addGroupB = function (team) {
+        this.groupB.push(team);
+    };
+    GroupsPage.prototype.addGroupC = function (team) {
+        this.groupC.push(team);
     };
     GroupsPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({

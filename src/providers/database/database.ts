@@ -31,9 +31,7 @@ export class DatabaseProvider {
                 id INTEGER PRIMARY KEY,
                 name TEXT,
                 image TEXT,
-                group_id INTEGER,
-                favorite INTEGER
-                );`,[])
+                group_id INTEGER,);`,[])
             .then(() => console.log('Executed SQL'))
             .catch(e => console.log(e));
 
@@ -62,6 +60,7 @@ export class DatabaseProvider {
               image_team_b TEXT,
               score TEXT,
               date TEXT,
+              favorite INTEGER,
               status TEXT`, [])
             .then(() => console.log('Executed SQL'))
             .catch(e => console.log(e));
@@ -76,9 +75,9 @@ export class DatabaseProvider {
   saveMatch(match: Match){
     return new Promise((resolve, reject) => {
       let sql = "INSERT OR UPDATE INTO match(id, id_team_a, id_team_b, name_team_a, name_team_b,"
-        +"image_team_a, image_team_b, score, date, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        +"image_team_a, image_team_b, score, date, status, favorite) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
       this.db.executeSql(sql, [match.id, match.idTeamA, match.idTeamB, match.nameTeamA, match.nameTeamB,
-        match.imageTeamA, match.imageTeamB, match.score, match.date, match.status]).then((data) => {
+        match.imageTeamA, match.imageTeamB, match.score, match.date, match.status,0]).then((data) => {
           resolve(data);
         }, (error) => {
           reject(error);

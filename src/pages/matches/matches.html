@@ -12,6 +12,9 @@
 
 <ion-content padding>
     <ion-list>
+      <ion-item *ngIf="matches.length == 0"> 
+        Empty
+      </ion-item>
       <ion-item *ngFor="let match of matches" detail>
           <ion-label>
               {{match.nameTeamA}}

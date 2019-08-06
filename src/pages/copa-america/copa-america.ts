@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController } from 'ionic-angular';
+import { DatabaseProvider } from '../../providers/database/database';
 
 /**
  * Generated class for the CopaAmericaPage tabs.
@@ -19,7 +20,7 @@ export class CopaAmericaPage {
   groupsRoot = 'GroupsPage'
   favoritesRoot = 'FavoritesPage'
 
-
   constructor(public navCtrl: NavController) {}
+
 
 }

@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { Match } from '../Match';
 import { Team } from '../Team';
 import { TeamDetail } from '../TeamDetail';
+import { Storage } from '@ionic/storage';
 //import { GroupsPage } from '../groups/groups';
 
 /**
@@ -26,20 +27,15 @@ export class MatchesPage {
   private appConstants: any;
 
   private matches: Array<Match> = [];
-  private teams: Array<Team> = [];
   private teamsId: Array<number> = [];
-  private matchesFinal: Array<Match> = [];
-  //private Group: GroupsPage;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public http:HttpClient, appConstants:AppConstantsProvider, 
-    private database: DatabaseProvider){
+    private database: DatabaseProvider, private storage:Storage){
     this.appConstants = appConstants;
-    //this.Group = group;
     this.getMatches(1);
     this.getMatches(2);
     this.getMatches(3);
-    this.mostrarMatches();
   }
 
   ionViewDidLoad() {
@@ -51,72 +47,66 @@ export class MatchesPage {
     if(groupId == 1){ url = url+this.appConstants.getGroupA();  }
     if(groupId == 2){ url = url+this.appConstants.getGroupB();  }
     if(groupId == 3){ url = url+this.appConstants.getGroupC();  }
-    //let url = 'https://cors-anywhere.herokuapp.com/'+this.appConstants.getGroupA();
     let data:Observable<any> = this.http.get(url);
     data.subscribe(result => {
-      var teamsIdAux: Array<number> = [];
+      var idsTeam: Array<number> = [];
       for (var item of result.data.match) {
         let imageA = "assets/imgs/Flags/"+item.home_name.toLowerCase()+".png";
         let imageB = "assets/imgs/Flags/"+item.away_name.toLowerCase()+".png";
 
-        let newMatch = new Match(item.id,item.home_id, item.away_id, item.home_name, item.away_name
-          ,item.score, item.date, item.status,imageA, imageB);
+        //Guardando en almacenamiento local
+        let newMatch = new Match(item.id, item.home_id, item.away_id, item.home_name,
+          item.away_name,item.score, item.date, item.status, imageA, imageB);
         this.matches.push(newMatch);
-
-        //save matches
-        this.database.saveMatch(newMatch).then( (data) =>{
-          console.log(data);
-        },(error) =>{
-          console.log(error);
-        });
-        console.log(newMatch);
+        let infoMatch=""+item.home_name+","+item.away_name+","+item.score+""+item.date+","
+        +item.status+","+imageA+""+imageB;
+        this.storage.set("match-"+item.id,infoMatch);
 
         //Agregar equipos
         if(this.teamsId.indexOf(item.home_id) == -1){
           //Agregarlo
-          let newTeam = new Team(item.home_id, item.home_name, imageA, groupId, 0);
-          this.teams.push(newTeam);
           this.teamsId.push(item.home_id);
-          teamsIdAux.push(item.home_id);
-          //Save team in local base
-          this.database.saveTeams(newTeam).then( (data) =>{
-            console.log(data);
-          },(error) =>{
-            console.log(error);
-          });
+          let infoTeam=""+item.home_name+","+imageA;
+          this.storage.set("team-"+item.home_id,infoTeam);
         }
         if(this.teamsId.indexOf(item.away_id) == -1){
           //Agregarlo
-          let newTeam = new Team(item.away_id, item.away_name, imageB, groupId, 0);
-          this.teams.push(newTeam);
-          this.teamsId.push(item.away_id);
-          teamsIdAux.push(item.away_id);
-          //Save team in local base
-          this.database.saveTeams(newTeam).then( (data) =>{
-            console.log(data);
-          },(error) =>{
-            console.log(error);
-          });
+          let infoTeam=""+item.away_name+","+imageB;
+          this.storage.set("team-"+item.away_id,infoTeam);
+        }
+
+        if(idsTeam.indexOf(item.away_id) == -1){
+          idsTeam.push(item.away_id);
+          console.log("Agregado: "+item.away_id);
+        }
+        if(idsTeam.indexOf(item.home_id) == -1){
+          idsTeam.push(item.home_id);
+          console.log("Agregado: "+item.home_id);
         }
       }
 
-      this.database.getMatches().then( (data: Array<Match>) =>{
-        console.log(data);
-        for(var m of data){
-          this.matchesFinal.push(m);
+      //Guardar info Group
+      var idsEquipo: string;
+      var primero:boolean = true;
+      console.log("Tamaño: "+idsTeam.length);
+      for(var idTeam of idsTeam){
+        if(primero){
+          idsEquipo = ""+idTeam;
+          primero = false;
+        }else{
+          idsEquipo = idsEquipo+","+idTeam;
         }
-      },(error) =>{
-        console.log(error);
-      });
+      }
+      this.storage.set("group-"+groupId,idsEquipo);
 
       //After getting the teams, we'll calculate 
       //the points of each team (Position table)
-      for (var team of teamsIdAux) {
+      for (var team of idsTeam) {
         var won: number = 0;
         var drawn: number = 0;
         var lost: number = 0;
         var points: number = 0;
-        var name: string;
+        var name:string = "";
         var numMatches: number = 0;
         for (var matchItem of this.matches) {
           if(matchItem.idTeamA == team){
@@ -141,26 +131,10 @@ export class MatchesPage {
         }
         points = (won*3)+(drawn*1);
         let image = "assets/imgs/Flags/"+name.toLowerCase()+".png";
-        let newTeamDetail = new TeamDetail(team,name, image, numMatches, won, 
-          drawn, lost, points);
-        /*if(groupId == 1){ this.group.addGroupA(newTeamDetail);  }
-        if(groupId == 2){ this.group.addGroupB(newTeamDetail);  }
-        if(groupId == 3){ this.group.addGroupC(newTeamDetail);  }*/
-        this.database.saveTeamDetail(newTeamDetail).then( (data) =>{
-          console.log(data);
-        },(error) =>{
-          console.log(error);
-        });
+        let infoDetail = ""+name+","+image+","+numMatches+","+won+","+drawn
+                        +","+lost+","+points;
+        this.storage.set("detail-"+team,infoDetail);
       }
-    });
-  }
-
-  mostrarMatches(){
-    console.log("Imprimiendo!!!!!!!!!!");
-    this.database.getMatches().then( (data) =>{
-      console.log(data);
-    },(error) =>{
-      console.log(error);
     });
   }
 

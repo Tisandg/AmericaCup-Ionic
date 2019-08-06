@@ -1,6 +1,6 @@
 webpackJsonp([3],{
 
-/***/ 281:
+/***/ 279:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8,7 +8,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CopaAmericaPageModule", function() { return CopaAmericaPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(101);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__copa_america__ = __webpack_require__(285);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__copa_america__ = __webpack_require__(283);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -38,13 +38,14 @@ var CopaAmericaPageModule = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 285:
+/***/ 283:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CopaAmericaPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(101);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_database_database__ = __webpack_require__(102);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -56,6 +57,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
 /**
  * Generated class for the CopaAmericaPage tabs.
  *
@@ -63,17 +65,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Ionic pages and navigation.
  */
 var CopaAmericaPage = /** @class */ (function () {
-    function CopaAmericaPage(navCtrl) {
+    function CopaAmericaPage(navCtrl, database) {
         this.navCtrl = navCtrl;
+        this.database = database;
+        this.matches = [];
         this.matchesRoot = 'MatchesPage';
         this.groupsRoot = 'GroupsPage';
         this.favoritesRoot = 'FavoritesPage';
     }
+    CopaAmericaPage.prototype.ionViewDidLoad = function () {
+        this.getMatches();
+    };
+    CopaAmericaPage.prototype.getMatches = function () {
+        var _this = this;
+        this.database.getMatches()
+            .then(function (matches) {
+            console.log(matches);
+            _this.matches = matches;
+        })
+            .catch(function (error) {
+            console.error(error);
+        });
+    };
     CopaAmericaPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
             selector: 'page-copa-america',template:/*ion-inline-start:"C:\Users\ASUS\Desktop\AmericaCup-Ionic\src\pages\copa-america\copa-america.html"*/'<ion-tabs>\n\n    <ion-tab [root]="matchesRoot" tabTitle="Matches" tabIcon="information-circle"></ion-tab>\n\n    <ion-tab [root]="groupsRoot" tabTitle="Groups" tabIcon="information-circle"></ion-tab>\n\n    <ion-tab [root]="favoritesRoot" tabTitle="Favorites" tabIcon="information-circle"></ion-tab>\n\n</ion-tabs>\n\n'/*ion-inline-end:"C:\Users\ASUS\Desktop\AmericaCup-Ionic\src\pages\copa-america\copa-america.html"*/
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_2__providers_database_database__["a" /* DatabaseProvider */]])
     ], CopaAmericaPage);
     return CopaAmericaPage;
 }());

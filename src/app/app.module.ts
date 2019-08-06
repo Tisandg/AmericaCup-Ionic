@@ -10,6 +10,7 @@ import { LiveScoreApiProvider } from '../providers/live-score-api/live-score-api
 import { HttpClientModule } from '@angular/common/http';
 import { SQLite } from '@ionic-native/sqlite';
 import { DatabaseProvider } from '../providers/database/database';
+import { IonicStorageModule } from '@ionic/storage';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { DatabaseProvider } from '../providers/database/database';
   imports: [
     BrowserModule,
     HttpClientModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -26,7 +28,7 @@ import { DatabaseProvider } from '../providers/database/database';
   ],
   providers: [
     StatusBar,
-    SplashScreen,
+    SplashScreen, 
     SQLite,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AppConstantsProvider,
